@@ -1,0 +1,83 @@
+version: '3'
+services:
+    gitHubProxy:
+      container_name: gitHubProxy
+      image: jordi1225/mojobraz:latest
+      ports:
+        - 8080:8080
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
+        - SPRING_DATASOURCE_USERNAME=Piotr
+        - SPRING_DATASOURCE_PASSWORD=password
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      networks:
+        - app-network
+
+    db:
+      image: postgres
+      container_name: db
+      ports:
+        - 5432:5432
+      environment:
+        POSTGRES_DB: compose-postgres
+        POSTGRES_USER: Piotr
+        POSTGRES_PASSWORD: password
+      networks:
+        - app-network
+
+    pgadmin:
+      image: dpage/pgadmin4
+      ports:
+        - 8081:80
+      environment:
+        PGADMIN_DEFAULT_EMAIL: default@gmail.com
+        PGADMIN_DEFAULT_PASSWORD: password
+      volumes:
+        - pgadmin_data:/var/lib/pgadmin
+      networks:
+        - app-network
+
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
+      environment:
+        - discovery.type=single-node
+        - xpack.security.enabled=false
+      ports:
+        - "9200:9200"
+      volumes:
+        - es_data:/usr/share/elasticsearch/data
+      networks:
+        - app-network
+
+
+    logstash:
+      image: jordi1225/githubproxy-logstash:latest
+#      build:
+#        context: .
+#        dockerfile: Dockerfile
+      ports:
+        - "5000:5000"
+      networks:
+        - app-network
+      depends_on:
+        - elasticsearch
+
+    kibana:
+      image: docker.elastic.co/kibana/kibana:7.16.2
+      ports:
+        - "5601:5601"
+      environment:
+        - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      networks:
+        - app-network
+      depends_on:
+        - elasticsearch
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgadmin_data:
+  es_data:
+
