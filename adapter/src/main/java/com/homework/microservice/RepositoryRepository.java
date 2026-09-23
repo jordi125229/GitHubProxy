@@ -1,6 +1,6 @@
-package com.homework.microservice.repositories;
+package com.homework.microservice;
 
-import com.homework.microservice.model.entity.GitRepository;
+import com.homework.microservice.entity.GitRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

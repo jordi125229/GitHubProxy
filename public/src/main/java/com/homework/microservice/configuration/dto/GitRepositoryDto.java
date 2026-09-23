@@ -1,4 +1,4 @@
-package com.homework.microservice.model.dto;
+package com.homework.microservice.configuration.dto;
 
 import lombok.*;
 

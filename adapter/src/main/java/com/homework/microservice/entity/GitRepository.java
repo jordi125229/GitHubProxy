@@ -1,4 +1,4 @@
-package com.homework.microservice.model.entity;
+package com.homework.microservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.Entity;
